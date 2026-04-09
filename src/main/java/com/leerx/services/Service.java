@@ -10,9 +10,9 @@ public interface Service<T> {
 
     void persist(T t);
 
-    void merge(Request request);
+    void merge(T request);
 
-    Optional<Request> read(Long id) throws EntityNotFoundException;
+    Optional<T> read(Long id) throws EntityNotFoundException;
 
     void delete(Long id);
 }
