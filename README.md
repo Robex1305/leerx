@@ -1,85 +1,25 @@
 # leerx
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+Application designed to scrap, store and expose lyrics from songs via RESTfull API.
+This project is non-commercial and has an educational purpose.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
 
-## Running the application in dev mode
+## The starter pack
 
-You can run your application in dev mode that enables live coding using:
+| Action                                            | How to                                                                                                                                                                           |
+|---------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Starting application (dev)**                    | ./mvnw quarkus:dev                                                                                                                                                               |
+| **Starting application (prod)**                   | ./mvnw quarkus:run                                                                                                                                                               |
+| **Packaging application & run tests**             | ./mvnw package                                                                                                                                                                   |
+| **Start database**                                | docker run -p 3306:3306 --env MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1 --env MARIADB_DATABASE=test --name mariadb --pull missing -v bdd:/var/lib/mysql --network mynet mariadb:latest |
+| **Start application (requires database started)** | docker run -p 5000:5000 --name leerx --pull missing --network mynet leerx:latest                                                                                                 |
 
-```shell script
-./mvnw quarkus:dev
-```
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+## Notes
+- In order to run containers, you must first create a volume for data persistance with "docker volume create bdd" and a custom network "docker network create mynet".
+- Port 3306 & 5000 are production ports. Use 3307 & 5001 for developpement use.
+- XAMPP was used for developpement database, you can get it here for free https://www.apachefriends.org/fr/index.html
+- This project was built using GraalVM 21 and WSL to host docker containers
 
-## Packaging and running the application
-
-The application can be packaged using:
-
-```shell script
-./mvnw package
-```
-
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
-
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
-
-If you want to build an _über-jar_, execute the following command:
-
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
-
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
-
-## Creating a native executable
-
-You can create a native executable using:
-
-```shell script
-./mvnw package -Dnative
-```
-
-***
-Building a native image on Windows with GraalVM requires Visual Studio 2022 Build tools.
-If you don't have Visual Studio 2022 version 17.0 or later, you can install the tools with the folowing command
-```
-winget install --id Microsoft.VisualStudio.2022.BuildTools --source winget
-```
-***
-
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
-
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
-
-You can then execute your native executable with: `./target/leerx-1.0-SNAPSHOT-runner`
-
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
-
-## Related Guides
-
-- Hibernate ORM ([guide](https://quarkus.io/guides/hibernate-orm)): Define your persistent model with Hibernate ORM and
-  Jakarta Persistence
-- REST JSON-B ([guide](https://quarkus.io/guides/rest#json-serialisation)): JSON-B serialization support for Quarkus
-  REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on
-  it.
-- JDBC Driver - MySQL ([guide](https://quarkus.io/guides/datasource)): Connect to the MySQL database via JDBC
-
-## Provided Code
-
-### Hibernate ORM
-
-Create your first JPA entity
-
-[Related guide section...](https://quarkus.io/guides/hibernate-orm)
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+*This project uses Quarkus, the Supersonic Subatomic Java Framework.
+If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.*
