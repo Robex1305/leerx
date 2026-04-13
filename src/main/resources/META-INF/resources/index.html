@@ -1,7 +1,279 @@
-<html>
-    <head></head>
-    <body>
-        <h1>Hello world!</h1>
-        <h2>Well played, you hailed the world</h2>
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LeerX – Lyrics</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f4f6;
+            overflow: hidden;
+        }
+
+        /* Centered app wrapper */
+        .app {
+            display: flex;
+            justify-content: center;
+            height: 100%;
+        }
+
+        /* Centered app wrapper */
+        .app {
+            display: flex;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+        }
+
+        /* Desktop max width (UX best practice) */
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 960px;
+                box-shadow: 0 0 20px rgba(0,0,0,0.08);
+            }
+        }
+
+        /* Header */
+        #forms {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 16px;
+            background: #fafafa;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        /* ✅ Fixed-width logo area */
+        .logo-area {
+            width: 260px;           /* fixed */
+            flex-shrink: 0;         /* prevent compression */
+        }
+
+        /* ✅ Fluid search area */
+        .search-area {
+            flex: 1;                /* take remaining space */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-subtitle {
+            font-size: 0.85em;
+            color: #555;
+            margin-top: 4px;
+        }
+
+        .logo-link {
+            font-size: 0.8em;
+            color: #007acc;
+            text-decoration: none;
+        }
+
+        input {
+            width: 100%;
+            padding: 6px;
+            margin: 6px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+
+        /* Scrollable results */
+        #responses {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f9fafb;
+        }
+
+        .song-card {
+            background: #ffffff;
+            border: 1px solid #ddd;
+            padding: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .song-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .song-line {
+            margin: 2px 0;
+            color: #444;
+        }
+
+        .song-status {
+            margin-top: 6px;
+            font-size: 0.85em;
+            color: #666;
+        }
+
+        .lyrics {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed #ccc;
+            white-space: pre-wrap;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <div class="container">
+
+        <!-- Header -->
+        <div id="forms">
+            <!-- Logo / branding -->
+            <div class="logo-area">
+                <div class="logo-title">🎶 LeerX</div>
+                <div class="logo-subtitle">
+                    Free & Open-source lyric interface for lrclib.net
+                </div>
+                <a
+                        class="logo-link"
+                        href="https://github.com/Robex1305/leerx"
+                        target="_blank"
+                >
+                    https://github.com/Robex1305/leerx
+                </a>
+            </div>
+
+            <!-- Search -->
+            <div class="search-area">
+                <form id="artistForm">
+                    <label for="artistName"><strong>🎵 Search artist or song</strong></label>
+                    <input type="text" id="artistName">
+                    <button type="submit">Load Songs</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Results -->
+        <div id="responses">
+            <h2>Songs</h2>
+            <div id="songsContainer">No songs loaded.</div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const songsContainer = document.getElementById("songsContainer");
+    const lyricsCache = new Map();
+    let lastClickedSongId = null;
+
+    function normalizeName(value) {
+        return value
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-zA-Z]/g, "")
+            .toLowerCase();
+    }
+
+    function formatDuration(seconds) {
+        const min = Math.floor(seconds / 60);
+        const sec = seconds % 60;
+        return `${String(min).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+    }
+
+    function hideAllLyrics() {
+        document.querySelectorAll(".lyrics").forEach(el => {
+            el.style.display = "none";
+        });
+    }
+
+    document.getElementById("artistForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const artistName = normalizeName(document.getElementById("artistName").value);
+        songsContainer.innerHTML = "Loading...";
+
+        try {
+            const response = await fetch(`/songs?artist=${artistName}`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const songs = await response.json();
+            songsContainer.innerHTML = "";
+
+            songs.forEach(song => {
+                const card = document.createElement("div");
+                card.className = "song-card";
+
+                const statusLine = document.createElement("div");
+                statusLine.className = "song-status";
+
+                card.innerHTML = `
+                    <div class="song-title">${song.trackName}</div>
+                    <div class="song-line">🎤 ${song.artistName}</div>
+                    <div class="song-line">⏳ ${formatDuration(song.duration)}</div>
+                    <div class="song-line">💿 Album: <i>${song.albumName}</i></div>
+                `;
+                card.appendChild(statusLine);
+
+                card.addEventListener("click", async () => {
+                    lastClickedSongId = song.id;
+                    hideAllLyrics();
+
+                    if (lyricsCache.has(song.id)) {
+                        lyricsCache.get(song.id).style.display = "block";
+                        statusLine.textContent = "✅ Fetched";
+                        return;
+                    }
+
+                    statusLine.textContent = "🔄 Fetching lyrics...";
+                    const lyricsResponse = await fetch(`/songs/${song.id}`);
+                    if (!lyricsResponse.ok) {
+                        statusLine.textContent = "";
+                        return;
+                    }
+
+                    const lyricsDiv = document.createElement("div");
+                    lyricsDiv.className = "lyrics";
+                    lyricsDiv.textContent = await lyricsResponse.text();
+                    card.appendChild(lyricsDiv);
+                    lyricsCache.set(song.id, lyricsDiv);
+                    statusLine.textContent = "✅ Fetched";
+
+                    if (lastClickedSongId === song.id) {
+                        lyricsDiv.style.display = "block";
+                    }
+                });
+
+                songsContainer.appendChild(card);
+            });
+
+        } catch (error) {
+            songsContainer.textContent = `Error: ${error.message}`;
+        }
+    });
+</script>
+
+</body>
 </html>
+``
