@@ -11,7 +11,18 @@ public class Song {
    public short duration;
 
     @Override
-    public int hashCode() {
-        return Objects.hash(trackName.toLowerCase()+"-"+artistName.toLowerCase());
+    public boolean equals(Object obj) {
+        if(obj instanceof Song that){
+            boolean sameArtist = this.artistName.equalsIgnoreCase(that.artistName);
+            boolean sameName = this.trackName.equalsIgnoreCase(that.trackName);
+            return sameArtist && sameName;
+        }
+        return false;
     }
-}
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.artistName.toLowerCase() + this.trackName.toLowerCase());
+    }}
+
+

@@ -8,7 +8,8 @@ import jakarta.ws.rs.core.MediaType;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
-import java.util.Optional;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -23,8 +24,9 @@ public class SongResource {
     @GET
     @Path("/songs")
     @Produces(MediaType.APPLICATION_JSON)
-    public Set<Song> query(@QueryParam("artist") String name, @QueryParam("trackName") String trackName) {
-        return lyricAPI.search(Optional.ofNullable(name).orElse(trackName)).stream().distinct().collect(Collectors.toSet());
+    public List<Song> query(@QueryParam("q") String criteria) {
+        Set<Song> results = lyricAPI.search(criteria);
+        return results.stream().sorted(Comparator.comparing(s -> s.trackName)).collect(Collectors.toList());
     }
     @GET
     @Path("/songs/{id}")
