@@ -1,6 +1,6 @@
 # leerx
 
-Application designed to scrap, store and expose lyrics from songs via RESTfull API.
+Application designed to browse lyrics from lrclib.net via simple & lightweight HTML Web page 
 This project is non-commercial and has an educational purpose.
 
 
@@ -16,10 +16,10 @@ This project is non-commercial and has an educational purpose.
 
 
 ## Notes
+- Many thanks to https://lrclib.net/. Check out their GitHub https://github.com/tranxuanthang/lrclib
 - In order to run containers, you must first create a volume for data persistance with "docker volume create bdd" and a custom network "docker network create mynet".
 - Port 3306 & 5000 are production ports. Use 3307 & 5001 for developpement use.
 - XAMPP was used for developpement database, you can get it here for free https://www.apachefriends.org/fr/index.html
-- This project was built using GraalVM 21 and WSL to host docker containers
-
-*This project uses Quarkus, the Supersonic Subatomic Java Framework.
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.*
+- This project was built using GraalVM 21
+- Docker containers were built and deployed in WSL
+- The HTML was vibe-coded using Copilot (I'm not a good front-end dev)
