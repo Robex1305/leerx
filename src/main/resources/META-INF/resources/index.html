@@ -70,6 +70,23 @@
             justify-content: center;
         }
 
+        /* Stack logo above search on tablet & mobile */
+        @media (max-width: 900px) {
+            #forms {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .logo-area {
+                width: 100%;
+            }
+
+            .search-area {
+                width: 100%;
+            }
+        }
+
         .logo-title {
             font-size: 1.5em;
             font-weight: bold;
@@ -164,6 +181,27 @@
             font-size: 0.95em;
             color: #666;
         }
+
+        .search-form {
+            width: 100%;
+        }
+
+        /* Input + button on the same line */
+        .search-input-wrapper {
+            display: flex;
+            width: 100%;
+            gap: 8px;
+
+        }
+
+        /* Slightly bigger input */
+        .search-input-wrapper input {
+            flex: 1;
+        }
+
+        .search-input-wrapper button {
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -190,12 +228,14 @@
 
             <!-- Search -->
             <div class="search-area">
-                <form id="artistForm">
-                    <label for="artistName"><strong>🎵 Search artist or song</strong></label>
-                    <input type="text" id="artistName">
-                    <button type="submit">Load Songs</button>
+                <form id="artistForm" class="search-form">
+                    <div class="search-input-wrapper">
+                        <input type="text" id="artistName" placeholder="🎵 Search artist or song" />
+                        <button type="submit">Search</button>
+                    </div>
                 </form>
             </div>
+
         </div>
 
         <!-- Results -->
@@ -238,8 +278,7 @@
                     alt="error"
             />
             <h2>Oops...</h2>
-            <p>Sorry, an error occured, it seems like we mishandled something.
-                <br> Please retry later
+            <p>Sorry, an error occured, it seems like we mishandled something. Please retry later
             </p>
         </div>
     </div>
