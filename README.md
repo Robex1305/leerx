@@ -11,7 +11,7 @@ This project is non-commercial and has an educational purpose.
 | **Starting application (dev)**                    | ./mvnw quarkus:dev                                                                                                                                                               |
 | **Starting application (prod)**                   | ./mvnw quarkus:run                                                                                                                                                               |
 | **Packaging application & run tests**             | ./mvnw package                                                                                                                                                                   |
-| **Start application (requires database started)** | docker run -p 5000:5000 --name leerx --pull missing --network mynet leerx:latest                                                                                                 |
+| **Build & Run Docker container** | docker build -t leerx && docker run --rm -p 5000:5000 --name leerx --pull missing -it leerx:latest                                                                                                 |
 
 
 ## Notes
