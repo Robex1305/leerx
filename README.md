@@ -11,15 +11,10 @@ This project is non-commercial and has an educational purpose.
 | **Starting application (dev)**                    | ./mvnw quarkus:dev                                                                                                                                                               |
 | **Starting application (prod)**                   | ./mvnw quarkus:run                                                                                                                                                               |
 | **Packaging application & run tests**             | ./mvnw package                                                                                                                                                                   |
-| **Start database**                                | docker run -p 3306:3306 --env MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=1 --env MARIADB_DATABASE=test --name mariadb --pull missing -v bdd:/var/lib/mysql --network mynet mariadb:latest |
 | **Start application (requires database started)** | docker run -p 5000:5000 --name leerx --pull missing --network mynet leerx:latest                                                                                                 |
 
 
 ## Notes
+- Port 5000 is for production ports. Use 5001 for developpement environment.
 - Many thanks to https://lrclib.net/. Check out their GitHub https://github.com/tranxuanthang/lrclib
-- In order to run containers, you must first create a volume for data persistance with "docker volume create bdd" and a custom network "docker network create mynet".
-- Port 3306 & 5000 are production ports. Use 3307 & 5001 for developpement use.
-- XAMPP was used for developpement database, you can get it here for free https://www.apachefriends.org/fr/index.html
-- This project was built using GraalVM 21
-- Docker containers were built and deployed in WSL
-- The HTML was vibe-coded using Copilot (I'm not a good front-end dev)
+- The HTML Page was vibe-coded using Copilot (I'm not a good front-end dev)
